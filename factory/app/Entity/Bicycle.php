@@ -2,13 +2,15 @@
 
 namespace App\Entity;
 
-class Bicycle {
+class Bicycle implements Vehicle {
     private $costPerKm;
     private $fuelType;
+    private $maxWeight;
 
-    public function __construct($costPerKm, $fuelType) {
-        $this->costPerKm = $costPerKm;
-        $this->fuelType = $fuelType;
+    public function __construct() {
+        $this->costPerKm = 0.1; // 0.1€ par km
+        $this->fuelType = "human";
+        $this->maxWeight = 20; // 20kg max
     }
 
     public function getCostPerKm() {
@@ -17,5 +19,9 @@ class Bicycle {
 
     public function getFuelType() {
         return $this->fuelType;
+    }
+
+    public function getMaxWeight() {
+        return $this->maxWeight;
     }
 }
