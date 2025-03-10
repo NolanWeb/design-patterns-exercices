@@ -2,7 +2,7 @@
 
 namespace App;
 
-class MySQLQueryBuilder implements QueryBuilderInterface
+class LiteralQueryBuilder implements QueryBuilderInterface
 {
     private array $fields = [];
     private string $table = '';
@@ -45,33 +45,34 @@ class MySQLQueryBuilder implements QueryBuilderInterface
     public function getSQL(): string
     {
         if (empty($this->table)) {
-            throw new \InvalidArgumentException("Table name is required");
+            throw new \InvalidArgumentException("La table est requise");
         }
 
-        $query = [];
+        $phrases = [];
         
         // SELECT
-        $query[] = 'SELECT ' . (empty($this->fields) ? '*' : implode(', ', $this->fields));
+        $phrases[] = 'Je sélectionne ' . (empty($this->fields) ? 'tous les champs' : implode(', ', $this->fields));
         
         // FROM
-        $query[] = 'FROM ' . $this->table;
+        $phrases[] = 'de la table ' . $this->table;
         
         // WHERE
         if (!empty($this->conditions)) {
-            $query[] = 'WHERE ' . implode(' AND ', $this->conditions);
+            $phrases[] = 'où ' . implode(' et ', $this->conditions);
         }
         
         // ORDER BY
         if ($this->orderBy !== null) {
-            $query[] = 'ORDER BY ' . $this->orderBy . ' ' . $this->orderDirection;
+            $direction = $this->orderDirection === 'ASC' ? 'croissant' : 'décroissant';
+            $phrases[] = 'trié par ' . $this->orderBy . ' en ordre ' . $direction;
         }
         
         // LIMIT
         if ($this->limit !== null) {
-            $query[] = 'LIMIT ' . $this->limit;
+            $phrases[] = 'limité à ' . $this->limit . ' résultats';
         }
         
-        return implode(' ', $query);
+        return implode(', ', $phrases) . '.';
     }
 
     public function reset(): void
